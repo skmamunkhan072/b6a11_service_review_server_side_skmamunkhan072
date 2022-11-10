@@ -87,6 +87,10 @@ async function run() {
       res.send(servicesPostReview);
     });
 
+    // client review data deleter
+    app.delete("/review", verifyJWT, async (req, res) => {
+      const id = req.params.id;
+    });
     // dfsdfd
   } finally {
   }
