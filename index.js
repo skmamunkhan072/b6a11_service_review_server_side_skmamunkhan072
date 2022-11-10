@@ -66,12 +66,23 @@ async function run() {
     // clint  review post
     app.post("/reviewadd", async (req, res) => {
       const reviewAddData = req.body;
-      console.log(reviewAddData);
       const result = await serviceClientReviewCollection.insertOne(
         reviewAddData
       );
       res.send(result);
     });
+
+    // client Review
+    app.get("/review", async (req, res) => {
+      const { email } = req.query;
+      console.log(email);
+      const query = {};
+      // const cursor = servicesCollection.find(query);
+      // const services = await cursor.toArray();
+      res.send(["services"]);
+    });
+
+    // dfsdfd
   } finally {
   }
 }
