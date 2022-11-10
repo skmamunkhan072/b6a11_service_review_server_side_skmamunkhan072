@@ -81,7 +81,7 @@ async function run() {
     });
 
     // services post
-    app.post("/services/:id", verifyJWT, async (req, res) => {
+    app.post("/services/:id", async (req, res) => {
       const { serviceReviewCardId } = req.body;
 
       let query = {};
@@ -105,7 +105,7 @@ async function run() {
     });
 
     // client Review
-    app.post("/review", verifyJWT, async (req, res) => {
+    app.post("/review", async (req, res) => {
       const { email } = req.body;
       let query = {};
       if (email) {
@@ -137,13 +137,14 @@ async function run() {
     });
 
     // client review data deleter
-    app.delete("/review", async (req, res) => {
-      const { email, id } = req.body;
-      // console.log(email, id);
+    app.delete("/review/:id", async (req, res) => {
+      const id = req.params.id;
+
       const query = { _id: ObjectId(id) };
+      console.log(id);
       const result = await serviceClientReviewCollection.deleteOne(query);
       console.log(result);
-      // res.send(result);
+      res.send(result);
     });
     // dfsdfd
   } finally {
