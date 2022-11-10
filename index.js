@@ -88,8 +88,9 @@ async function run() {
     });
 
     // client review data deleter
-    app.delete("/review", verifyJWT, async (req, res) => {
-      const id = req.params.id;
+    app.delete("/review", async (req, res) => {
+      const { email, _id } = req.body;
+      console.log(email, _id);
     });
     // dfsdfd
   } finally {
