@@ -18,6 +18,27 @@ const client = new MongoClient(uri, {
   serverApi: ServerApiVersion.v1,
 });
 
+// jwt varify
+
+function verifyJWT(req, res, next) {
+  const authHeader = req.headers.authorization;
+  console.log(authHeader);
+  // user token check
+  if (!authHeader) {
+    return res.status(401).send({ message: "unauthorized access" });
+  }
+  const token = authHeader.split(" ")[1];
+  // user token valid ki na check
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, function (error, decoded) {
+    if (error) {
+      return res.status(403).send({ message: "Forbidden access" });
+    }
+    // set req decoded token
+    req.decoded = decoded;
+    next();
+  });
+}
+
 async function run() {
   try {
     const servicesCollection = client
@@ -34,7 +55,7 @@ async function run() {
       const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
         expiresIn: "1h",
       });
-
+      console.log(token, process.env.ACCESS_TOKEN_SECRET);
       res.send({ token });
     });
 
@@ -97,7 +118,7 @@ async function run() {
       res.send(servicesPostReview);
     });
     // Updete function
-    app.patch("/review", async (req, res) => {
+    app.patch("/review", verifyJWT, async (req, res) => {
       const { updetData, name, email, detailsPara } = req.body;
       console.log(req.body);
       const query = { _id: ObjectId(updetData) };
@@ -136,4 +157,5 @@ app.get("/", (req, res) => {
 
 app.listen(port, () => {
   console.log("Listening damo to port", port);
+  // console.log(process.env.ACCESS_TOKEN_SECRET);
 });
