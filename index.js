@@ -91,6 +91,9 @@ async function run() {
     app.delete("/review", async (req, res) => {
       const { email, _id } = req.body;
       console.log(email, _id);
+      const query = { _id: ObjectId(_id), email };
+      const result = await serviceClientReviewCollection.deleteOne(query);
+      console.log(result);
     });
     // dfsdfd
   } finally {
