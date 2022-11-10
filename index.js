@@ -98,19 +98,20 @@ async function run() {
     });
     // Updete function
     app.patch("/review", async (req, res) => {
-      const { id, name } = req.body;
-      console.log(id, name);
-      const query = { _id: ObjectId(id) };
+      const { updetData, name, email, detailsPara } = req.body;
+      console.log(req.body);
+      const query = { _id: ObjectId(updetData) };
       const updatedDoc = {
         $set: {
           name: name,
+          email: email,
+          detailsPara: detailsPara,
         },
       };
       const result = await serviceClientReviewCollection.updateOne(
         query,
         updatedDoc
       );
-      console.log(result);
       res.send(result);
     });
 
