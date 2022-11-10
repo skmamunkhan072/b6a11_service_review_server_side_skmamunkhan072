@@ -27,6 +27,17 @@ async function run() {
     const serviceClientReviewCollection = client
       .db("home_kitchen_service_data")
       .collection("ServiceClientReview");
+
+    // jwt token create
+    app.post("/jwt", (req, res) => {
+      const user = req.body;
+      const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
+        expiresIn: "1h",
+      });
+
+      res.send({ token });
+    });
+
     //   all data
     app.get("/service", async (req, res) => {
       const query = {};
@@ -75,7 +86,6 @@ async function run() {
     // client Review
     app.post("/review", async (req, res) => {
       const { email } = req.body;
-      console.log(email);
       let query = {};
       if (email) {
         query = {
@@ -89,11 +99,12 @@ async function run() {
 
     // client review data deleter
     app.delete("/review", async (req, res) => {
-      const { email, _id } = req.body;
-      console.log(email, _id);
-      const query = { _id: ObjectId(_id), email };
+      const { email, id } = req.body;
+      // console.log(email, id);
+      const query = { _id: ObjectId(id) };
       const result = await serviceClientReviewCollection.deleteOne(query);
       console.log(result);
+      // res.send(result);
     });
     // dfsdfd
   } finally {
