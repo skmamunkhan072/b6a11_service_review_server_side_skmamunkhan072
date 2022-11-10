@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const jwt = require("jsonwebtoken");
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 require("dotenv").config();
 const port = process.env.PORT || 5000;
@@ -55,7 +56,6 @@ async function run() {
       const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
         expiresIn: "1h",
       });
-      console.log(token, process.env.ACCESS_TOKEN_SECRET);
       res.send({ token });
     });
 
@@ -81,7 +81,7 @@ async function run() {
     });
 
     // services post
-    app.post("/services/:id", async (req, res) => {
+    app.post("/services/:id", verifyJWT, async (req, res) => {
       const { serviceReviewCardId } = req.body;
 
       let query = {};
@@ -96,7 +96,7 @@ async function run() {
     });
 
     // clint  review post
-    app.post("/reviewadd", async (req, res) => {
+    app.post("/reviewadd", verifyJWT, async (req, res) => {
       const reviewAddData = req.body;
       const result = await serviceClientReviewCollection.insertOne(
         reviewAddData
@@ -105,7 +105,7 @@ async function run() {
     });
 
     // client Review
-    app.post("/review", async (req, res) => {
+    app.post("/review", verifyJWT, async (req, res) => {
       const { email } = req.body;
       let query = {};
       if (email) {
