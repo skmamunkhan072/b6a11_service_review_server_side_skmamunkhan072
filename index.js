@@ -73,13 +73,18 @@ async function run() {
     });
 
     // client Review
-    app.get("/review", async (req, res) => {
-      const { email } = req.query;
+    app.post("/review", async (req, res) => {
+      const { email } = req.body;
       console.log(email);
-      const query = {};
-      // const cursor = servicesCollection.find(query);
-      // const services = await cursor.toArray();
-      res.send(["services"]);
+      let query = {};
+      if (email) {
+        query = {
+          email,
+        };
+      }
+      const cursor = serviceClientReviewCollection.find(query);
+      const servicesPostReview = await cursor.toArray();
+      res.send(servicesPostReview);
     });
 
     // dfsdfd
