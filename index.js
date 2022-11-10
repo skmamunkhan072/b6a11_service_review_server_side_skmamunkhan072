@@ -24,7 +24,7 @@ async function run() {
       .db("home_kitchen_service_data")
       .collection("services_data");
 
-    const serviceClientReviewcollection = client
+    const serviceClientReviewCollection = client
       .db("home_kitchen_service_data")
       .collection("ServiceClientReview");
     //   all data
@@ -48,11 +48,28 @@ async function run() {
       res.send(service);
     });
 
-    // client review function
-    app.post("/review", async (req, res) => {
-      const order = req.body;
-      console.log(order);
-      const result = await serviceClientReviewcollection.insertOne(order);
+    // services post
+    app.post("/services/:id", async (req, res) => {
+      const { serviceReviewCardId } = req.body;
+
+      let query = {};
+      if (serviceReviewCardId) {
+        query = {
+          serviceReviewCardId: serviceReviewCardId,
+        };
+      }
+      const cursor = serviceClientReviewCollection.find(query);
+      const servicesPostReview = await cursor.toArray();
+      res.send(servicesPostReview);
+    });
+
+    // clint  review post
+    app.post("/reviewadd", async (req, res) => {
+      const reviewAddData = req.body;
+      console.log(reviewAddData);
+      const result = await serviceClientReviewCollection.insertOne(
+        reviewAddData
+      );
       res.send(result);
     });
   } finally {
@@ -67,14 +84,3 @@ app.get("/", (req, res) => {
 app.listen(port, () => {
   console.log("Listening damo to port", port);
 });
-// [
-//   {
-//     "serviceId": "illum",
-//     "reviewAuthorImg": "rem",
-//     "reviewAuthorName": "ut",
-//     "reviewAuthorDescription": "aut",
-//     "reviewAuthorEmail": "feeney.dejah@ryan.info",
-//     "reviewAuthorRating": 2,
-//     "authorPostTime": 129039
-//   },
-// ]
