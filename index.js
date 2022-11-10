@@ -96,6 +96,23 @@ async function run() {
       const servicesPostReview = await cursor.toArray();
       res.send(servicesPostReview);
     });
+    // Updete function
+    app.patch("/review", async (req, res) => {
+      const { id, name } = req.body;
+      console.log(id, name);
+      const query = { _id: ObjectId(id) };
+      const updatedDoc = {
+        $set: {
+          name: name,
+        },
+      };
+      const result = await serviceClientReviewCollection.updateOne(
+        query,
+        updatedDoc
+      );
+      console.log(result);
+      res.send(result);
+    });
 
     // client review data deleter
     app.delete("/review", async (req, res) => {
